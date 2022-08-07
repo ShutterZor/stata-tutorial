@@ -820,24 +820,353 @@ Output:
 		
 	* 纵向合并（增加样本值，相当于在 Excel 后面追加数据）
 		
+		* 查看数据与追加
 		
+			use MergeData1.dta, clear
+			browse
+			use MergeData2.dta, clear
+			browse
+			
+			use MergeData1.dta, clear
+			append using MergeData2.dta
+			browse
+			
+			use MergeData1.dta, clear
+			append using MergeData2.dta, gen(_append)
+			browse
 		
+			// 注意变量名问题
+			// Stata 区分大小写，Stata 与 stata 是不同的名称
+			// 需要保证两个数据 dta 文件中相同变量名称相同
+			// 需要保证两个数据 dta 文件中相同变量格式相同
+			
+			
+*----------2.7：长宽数据转换		
+	
+	
+	* 通过 reshape 命令转换
 		
+		* 宽转长生成数据
+			
+			clear
+			input id sex inc80 inc81 inc82 xx80 xx81 xx82
+				1 0 5000 5500 6000 1 2 3
+				2 1 2000 2200 3300 2 3 4
+				3 0 3000 2000 1000 6 4 8
+			end
 		
+			reshape long inc xx, i(id) j(year)
+			
+			// 修正年份
+				
+				replace year = real("18"+string(year))
+	
+		* 长转宽生成数据
+			
+			clear
+			input id	year	sex	inc	xx
+				1	1880	0	5000	1
+				1	1881	0	5500	2
+				1	1882	0	6000	3
+				2	1880	1	2000	2
+				2	1881	1	2200	3
+				2	1882	1	3300	4
+				3	1880	0	3000	6
+				3	1881	0	2000	4
+				3	1882	0	1000	8		
+			end
 		
+			reshape wide inc xx, i(id) j(year)
 		
+		// 注意 reshape 命令宽转长仅仅适用于变量以 文字+数字 形式命名
+	
+	* gather 与 spread
 		
+		ssc install tidy
 		
+		* 宽转长 gather
+			
+			sysuse educ99gdp.dta, clear
+			browse
+			
+			gather public private
+			
+			sysuse educ99gdp.dta, clear
+			gather public private, variable(Indicator) value(Ratio)
+			
+	
+		* 长转宽 spread
+			
+			spread Indicator Ratio
+	
+		* 缺点
+			
+			clear
+			input id sex inc80 inc81 inc82 xx80 xx81 xx82
+				1 0 5000 5500 6000 1 2 3
+				2 1 2000 2200 3300 2 3 4
+				3 0 3000 2000 1000 6 4 8
+			end
+			
+			gather inc* xx*
+	
+			// gather 仅能操作 “一批” 变量
+			
+	* 一种其他办法，从底层实现
 		
+		// 分析 gather
 		
+			clear
+				input id sex inc80 inc81 inc82 xx80 xx81 xx82
+					1 0 5000 5500 6000 1 2 3
+					2 1 2000 2200 3300 2 3 4
+					3 0 3000 2000 1000 6 4 8
+				end
+				
+			gather inc*
 		
-*----------1.6:
+		// 循环拆分，拆成样本年份与指标的对应格式
+		
+			forvalues a = 1/3 {
+				foreach b in inc xx {
+					preserve
+						use ReshapeData.dta, clear
+						keep if id == `a'
+						keep id sex `b'*
+						gather `b'*, variable(year) value(`b')
+						replace year = substr(year,-2,2)
+						destring year, replace
+						save `a'`b'.dta, replace
+					restore 
+					
+				}		
+			}
+		
+		// 合并单个样本的其余变量
+		
+			use 1inc.dta, clear
+			browse
+			merge 1:1 id year using 1xx.dta
+			
+			forvalues i = 1/3 {
+				use `i'inc.dta, clear
+				merge 1:1 id year using `i'xx.dta
+				drop _merge
+				save `i'.dta, replace
+			}
+		
+		// 追加其余样本时间序列数据，形成面板数据
+		
+			use 1.dta, clear
+			browse
+			forvalues i = 2/3 {
+				append using `i'.dta
+			}
+			
+			save LongShapeData.dta, replace
+		
+		// 清理中间过程文件
+		
+			forvalues a = 1/3 {
+				erase `a'.dta
+				foreach b in inc xx {
+					erase `a'`b'.dta
+				}
+			}
+		
+
+*----------2.8：文字变量的处理
 
 
-*----------1.7:
+	* 变量的部分文字不影响变量，可直接 destring
+		
+		import excel using CharacterData.xls, first clear
+		browse 
+		clonevar var4 = var3
+		
+		destring var2, gen(var2N)
+		destring var3, replace 
+		destring var3, replace force
+		destring var4, gen(var4N) 
+		destring var4, gen(var4N) force
+	
+	* 含有 % 的变量也可以直接转换
+		
+		clear 
+		input str6 Percent 
+			"10%"
+			"20%"
+			"30%"
+			"40%"
+			"50%"
+		end
+		browse
+		
+		destring Percent, gen(Num) percent
+		
+		
+	* 需要保留的文字变量，若需参与后续回归，则可以转换为类别变量
+		
+		use MainlandChina.dta, clear
+		browse 
+		
+		encode province, gen(Province)
+		
+		// 或者
+			
+			egen Province1 = group(province), label lname(province)
+		
+		// 查看编码
+			
+			labelbook
+	
+	* 时间变量转换（非必要）
+		
+		* 时间日期变量是一种较为特殊的变量，有单独的存储格式
+		* 在这里不够严谨地将其划分为文字变量
+		
+		* 生成数据 
+			
+			clear 
+			input str6 Year str6 Month str6 Day
+				"2020" "Jan" "3"
+				"2021" "Feb" "6"
+				"2022" "Mar" "9"
+			end
+			browse
+		
+			gen Date = Year + "/" + Month + "/" + Day
+		
+			gen SDate = date(Date, "YMD")
+			format SDate %td
+			
+			tsset Date
+			tsset SDate
+		
+		* 分离年月日（比较常用）
+			
+			clear 
+			input str8 Date
+				20200103
+				20210103
+				20220103
+			end
+			browse
+			
+			gen Year = real(substr(Date,1,4))
+			gen Month = real(substr(Date,5,2))
+			gen Day = real(substr(Date,-2,2))
+			
+			tsset Year
+		
+		* 更多时间变量转换相关见如下网页
+		
+			view browse https://www.bilibili.com/read/cv12026231
+	
+	* 文字变量拆分 split
+		
+		clear 
+		input str18 City 
+			台湾省台北市
+			台湾省高雄市
+			湖北省潜江市
+			湖北省武汉市
+			湖南省长沙市
+			四川省成都市
+		end
+		
+		// 从有规律的组合中拆分 省 与市区
+	
+			split City, parse("省") 
+			replace City1 = City1 + "省"
+			
+			rename City1 province 
+			rename City2 city
+	
+/*
+		由于我国幅员辽阔，地大物博，省级行政单位并不完全是以省结尾，
+	市级行政单位也非都以市结尾。省级单位特殊情况诸如 新疆维吾尔自治区；
+	市级单位特殊情况诸如内蒙古自治区锡林郭勒盟；此外还应当考虑四个直辖市
+	。所以通过 split 进行分割的情况仅仅适用于整齐规律的值，后续将介绍通
+	过正则表达的方式提取 CEO 籍贯信息的操作
+ */
+	
+		* 通过截取的方式提取（同样适用于整齐规则的变量）
+		
+			gen province1 = substr(City,1,9)
+			gen city1 = substr(City,10,9)
+		
+			// 注意，每一个汉字算 3 个占位
+		
+	
+	* 可以处理文字变量的其他函数
+		
+		help string functions
+	
+		* 更改大小写
+		
+			dis lower("ASejksjdlwASD")
+			dis upper("sadhASDkSss")
+			
+		* 测量文本长度
+			
+			dis length("汉字")			// 一个汉字长度为 3
+			dis length("English ")		// 一个字母长度为 1，且空格为 1
+		
+		* 测量文本个数
+			
+			dis wordcount("汉字 English ")		// 空格不作数
+		
+		* 匹配文本是否出现
+			
+			dis strmatch("xxx出生在中国湖北省潜江市", "潜江")
+			
+			dis strmatch("xxx出生在中国台湾省台北市", "台北市*")
+			dis strmatch("xxx出生在中国台湾省台北市", "*台北市*")
 
-
-*----------1.8:
+			dis strmatch("Stata", "s")
+			dis strmatch("Stata", "s")
+			dis strmatch("Stata", "S")
+			dis strmatch("Stata", "S*")
+			
+			// 区分大小写，且匹配中文时需要在待匹配内容两侧加 *
+			
+		
+		dis  trim(" I love    STATA  ")   // 去掉两端的空格
+		dis ltrim(" I love    STATA  ")   // 去掉左边的空格 
+		dis rtrim(" I love    STATA  ")   // 去掉右边的空格       
+		dis itrim(" I love    STATA  ")   // 去掉中间的空格             
+		dis itrim("内  蒙   古 自治区")   // 去掉中间的空格，不奏效？
+		help itrim()
+		dis subinstr("内    蒙 古 自治区", " ", "", .)
+	   *-释义：
+	   *  subinstr(s, s1, s2, n)
+	   *  s   原始字符串
+	   *  s1 “将被替换”的字符串
+	   *  s2 “替换成”的字符串
+	   *  n   前n个出现的目标字符，若为“.”则表示全部替换
+		dis subinstr("内 蒙 古 自治区", " ", "", 1)
+		dis subinstr("内 蒙 古 自治区", " ", "", 2)
+	   
+	   *-说明：上述函数都可以用于 -generate- 命令来生成新的变量
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 *----------1.9:
