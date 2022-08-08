@@ -12,6 +12,7 @@ References:
 Output:             
 ==================================================*/
 
+
 /*==================================================
               0：目录
 ==================================================*/
@@ -25,7 +26,12 @@ Output:
 * 	2.6  数据的合并和追加
 * 	2.7  长宽数据转换
 *   2.8  文字变量的处理
-*   2.9  类别变量的分析
+*   2.9	 类别变量的分析
+
+*	CASE1	描述性统计与相关性分析的导出
+*	CASE2	CFPS  数据清洗
+*	CASE3	CSMAR 数据清洗
+*	CASE4	WIND  数据清洗
 
 
 /*==================================================
@@ -1130,46 +1136,378 @@ Output:
 			dis strmatch("Stata", "S*")
 			
 			// 区分大小写，且匹配中文时需要在待匹配内容两侧加 *
+		
+		* 去除空格的几种方法
+			
+			dis " 我还 在漂泊  你是错 过的烟火 "
+			
+			// 去除两端空格
+			dis  strtrim(" 我还 在漂泊  你是错 过的烟火 ") 
+		
+			// 去除左边空格
+			dis  strltrim(" 我还 在漂泊  你是错 过的烟火 ") 
+			
+			// 去除右边空格
+			dis  strrtrim(" 我还 在漂泊  你是错 过的烟火 ") 
+			
+			// 去掉中间空格
+			dis  stritrim(" 我   还 在  漂泊  你  是错 过的烟火 ") 
+			help stritrim()		// 将中间若干空格压缩成一个空格
+			
+			// 若要去掉所有空格
+			dis subinstr(" 我   还 在  漂泊  你  是错 过的烟火 "," ","",.)
+			help subinstr()		// 点表示替换所有空格
+			
+			dis subinstr(" 我   还 在  漂泊  你  是错 过的烟火 "," ","",2)
+			
+			dis subinstr(" 我   还 在  漂泊  你  是错 过的烟火 "," ","",4)
+			
+		* 以上 dis 部分内容都可以配合 gen 生成新的变量
+		
+	* 正则表达（regular expression）
+	  
+		* 正则表达教程
+	
+			view browse https://www.runoob.com/regexp/regexp-tutorial.html
+	
+		* 正则表达初印象（主要：ustrregexm、ustrregexs）
+		
+			clear
+			input str10 String 
+				"abc"
+				"ab"
+				"aa"
+				"abcd"
+				"aad"
+				"aab123"
+				"cdf12345"
+				"123"
+				"Abc"
+			end
+			
+			gen Number1 = ustrregexs(0) if ustrregexm(String,"[0-9]")
+			gen Number2 = ustrregexs(0) if ustrregexm(String,"[0-9]+")
+			gen Number3 = ustrregexs(0) if ustrregexm(String,"[0-9]*")
+			gen Number4 = ustrregexs(0) if ustrregexm(String,"[0-9]?")
+			
+			gen Number5 = ustrregexs(0) if ustrregexm(String,"[0-9]$")
+			gen Number6 = ustrregexs(0) if ustrregexm(String,"[0-9]+$")
+			gen Number7 = ustrregexs(0) if ustrregexm(String,"[0-9]*$")
+			gen Number8 = ustrregexs(0) if ustrregexm(String,"[0-9]?$")
+			
+			gen Number9 = ustrregexs(0) if ustrregexm(String,"^[0-9]")
+			gen Number10 = ustrregexs(0) if ustrregexm(String,"^[0-9]+")
+			gen Number11 = ustrregexs(0) if ustrregexm(String,"^[0-9]*")
+			gen Number12 = ustrregexs(0) if ustrregexm(String,"^[0-9]?")
 			
 		
-		dis  trim(" I love    STATA  ")   // 去掉两端的空格
-		dis ltrim(" I love    STATA  ")   // 去掉左边的空格 
-		dis rtrim(" I love    STATA  ")   // 去掉右边的空格       
-		dis itrim(" I love    STATA  ")   // 去掉中间的空格             
-		dis itrim("内  蒙   古 自治区")   // 去掉中间的空格，不奏效？
-		help itrim()
-		dis subinstr("内    蒙 古 自治区", " ", "", .)
-	   *-释义：
-	   *  subinstr(s, s1, s2, n)
-	   *  s   原始字符串
-	   *  s1 “将被替换”的字符串
-	   *  s2 “替换成”的字符串
-	   *  n   前n个出现的目标字符，若为“.”则表示全部替换
-		dis subinstr("内 蒙 古 自治区", " ", "", 1)
-		dis subinstr("内 蒙 古 自治区", " ", "", 2)
-	   
-	   *-说明：上述函数都可以用于 -generate- 命令来生成新的变量
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		* 正则表达常用操作
+		
+			clear
+			input str16 String 
+				"ab"
+				"AA"
+				"ABcd"
+				"aab123"
+				"AA133"
+				"Cdf12345"
+				"123"
+				"错过的烟火"
+				"红颜如霜123"
+			end
+			
+			// 提出所有数字
+			
+			gen Number = ustrregexs(0) if ustrregexm(String,"\d+")
+			
+			// 提出所有小写字母
+			
+			gen LetterL = ustrregexs(0) if ustrregexm(String,"[a-z]+")
+			
+			// 提出所有大写字母
+			
+			gen LetterU = ustrregexs(0) if ustrregexm(String,"[A-Z]+")
+			
+			// 提出所有字母
+			
+			gen Letter = ustrregexs(0) if ustrregexm(String,"[a-zA-Z]+")
+			
+			// 提出所有汉字
+			
+			gen Character = ustrregexs(0) if ustrregexm(String,"[\u4e00-\u9fa5]+")
+
+			// 其余有用示例
+			
+			view browse https://blog.csdn.net/wangjia55/article/details/7877915
+			
+			// 可用于匹配身份证、邮政编码、网址、Email等
+		
+		* 一个例子：通过正则表达提取上市公司 CEO 的籍贯信息
+			
+			use CEONativePlace.dta, clear
+			compress
+			
+			// 提取省份
+			
+gen Province=ustrregexs(0) if ustrregexm(NativePlace,".*省|.*自治区|.*市|.*特别行政区")
+			
+			// 提取所在地级市
+			
+gen City = ustrregexs(2) if ustrregexm(NativePlace,"(.*省|.*自治区)?(.*市|.*自治州|.*地区|.*盟)")
+
+gen Province1 = ustrregexs(1) if ustrregexm(NativePlace,"(.*省|.*自治区)?(.*市|.*自治州|.*地区|.*盟)")	
+
+			browse NativePlace Province1
+			help ustrregexs()
 
 
-*----------1.9:
+*----------2.9：类别变量的分析
+
+	
+	* 类别数目简单统计
+	
+		* 简单了解类别变量分布情况 tabulate
+			
+			sysuse auto.dta, clear
+			tabulate foreign
+		
+		* 统计非重复值的个数
+			
+			distinct foreign
+			distinct, max(10)
+			distinct make-headroom
+			distinct make-headroom, missing abbrev(6)
+			distinct foreign rep78, joint
+			distinct foreign rep78, joint missing
+		
+	* 分组统计量
+		
+		* 一维分组统计量
+			
+			* 简要组合 by 与 sum 进行描述
+			
+				sysuse auto.dta, clear
+				by foreign: sum price
+			
+			// 等价于
+				
+				sum price if foreign == 0
+				sum price if foreign == 1
+				
+			* tabstat 命令
+				
+				tabstat price, by(foreign) stat(mean sd med min max)
+				
+			* tabulate 命令
+			
+				sysuse auto.dta, clear
+				tabulate foreign
+				
+				sysuse nlsw88.dta, clear
+				tab occupation
+				tab occupation, sort
+				tab occupation, summarize(wage)
+				
+		* 二维和三维分组统计量
+			
+			sysuse nlsw88.dta, clear
+			bysort race married: sum wage
+			
+			bysort race married: tabstat wage,   ///
+				   by(union) s(n mean sd p50 min max)
+				   
+			tabstat wage, by(race married union)  ///
+				   s(n mean sd p50 min max) // 错误方式
+				   
+			bysort race married: tab union, sum(wage)
+				
+				
+		* 四维分组统计量
+			
+			* 可以在 table
+				
+				table race married union,       ///
+						by(collgrad) c(mean age) format(%4.2f)
+					
+				table union race married,       ///
+						by(collgrad) c(mean wage freq) format(%4.2f)	
+			
+				// 基本规律
+				// by() 中的变量与 table 后的第一个变量联合为表的左上角
+				// 表的第一列为 by() 中的变量分类与 table 后第一个变量的组合
+				// 表的第一行中从第二列开始为 table 后的第二三个变量的分类组合
+		
+	* 计算分组统计量的其他办法（常用且自由度更高）
+			
+		* egen 命令 
+			
+			sysuse nlsw88.dta, clear
+			
+			// 计算不同人种的工资均值
+			
+				bys race: egen Meanwage = mean(wage)	
+			
+			// 计算不同人种的工资中位数
+			
+				bys race: egen Midwage1 = median(wage)
+				bys race: egen Midwage2 = pctile(wage), p(50)
+			
+			// 计算不同人种的工资标准差
+				
+				bys race: egen SDwage = sd(wage)
+		
+				preserve
+					duplicates drop race, force
+					drop wage
+					list race *wage*
+				restore 
+			
+		* collapse 命令（会改变原始数据）
+			
+			* 计算国产车与非国产车价格均值与生产商个数
+			
+				sysuse auto.dta, clear
+				collapse (mean) Meanprice=price 	///
+						 (count) Nummake=make, 		///
+						 by(foreign)				// 错误用法，有文字
+			
+				
+				sysuse auto.dta, clear
+				encode make, gen(Make)				// 将文字转为带标签的变量
+				collapse (mean) price 	///
+						 (count) Make, 		///
+						 by(foreign)
+				
+				// 自定义生成变量的名称
+				
+					sysuse auto.dta, clear
+					encode make, gen(Make)
+					collapse (mean) Meanprice=price 	///
+							 (count) NumMake=Make, 		///
+							 by(foreign)
+			
+			// 使用后需要重新导入一次数据
+			// 如仅仅想作图，则可以配合 preserve 与 restore 使用
+			// preserve 与 restore 可以不改变当前数据
+			
+				sysuse auto.dta, clear 
+
+				preserve
+					encode make, gen(Make)
+					collapse (mean) Meanprice=price 	///
+							 (count) NumMake=Make, 		///
+							 by(foreign)
+					egen STDprice = std(Meanprice), mean(0) std(1)
+					egen STDnum = std(NumMake), mean(0) std(1)
+					twoway (scatter STDprice foreign, color(blue)) ///
+						   (scatter STDnum foreign, color(red))
+				restore
+			
+	* 图示分组统计量
+		
+		* 通过柱状图进行绘制
+			
+			sysuse nlsw88.dta, clear
+			graph bar (median) wage, over(race) over(married) over(collgrad)
+		
+			* 改变柱状图方向（横向柱状图）
+			
+				graph hbar (median) wage, over(race) over(married) over(collgrad)
+				
+				graph hbar (median) wage, over(race) over(married)
+				
+				graph hbar (median) wage, over(race)
+				
+				graph hbar (median) wage, over(race) over(married) over(union)
+				
+				// 最多允许 3 个 over()
+			
+			* 增加更多地变量
+				
+				graph hbar (mean) wage (median) age, over(race) over(married)
+				
+				graph hbar wage age, over(race) over(married) stack
+				
+				* 改变图形标签
+				
+					graph hbar wage age,                      			  ///
+						over(race, relabel(1 "白人" 2 "黑人" 3 "其他"))   ///
+						over(married, relabel(1 "单身" 2 "已婚"))         ///
+						legend(label(1 "工资水平") label(2 "年龄")) 
+				
+					shellout WordFile.docx
+					
+					// Stata 默认字体不够美观，在图形界面复制粘贴到 Word
+					// 会发现自动更改为 宋体
+		
+		* 通过箱型图描述变量分布情况
+			
+			sysuse nlsw88.dta, clear
+			
+			graph box wage,  over(race)
+			graph box age, over(race) over(married)
+			graph box age, over(race) over(married) over(union)
+			graph box age, over(race) over(married) over(union) nooutsides		
+				
+		
+/*==================================================
+						CASE
+==================================================*/
+
+
+*	CASE1	描述性统计与相关性分析的结果导出
+	
+	* 描述性统计导出 sum2docx
+	
+		sysuse auto.dta, clear
+		
+		rename price 		价格
+		rename headroom 	头顶空间
+		rename length 		车长
+		rename weight		车重
+		
+		local Variables 价格 头顶空间 车长 车重
+		sum2docx `Variables' using 描述性统计表.docx,	///
+			replace stats(N mean sd median p25 p75 min max)			///
+			title("描述性统计表1") font("宋体",12,"black") ///
+			pagesize(A4)
+			
+		sum2docx `Variables' using 描述性统计表.docx,	///
+			replace stats(N mean sd median p25 p75 min max)			///
+			landscape title("描述性统计表2") font("宋体",12,"black") ///
+			pagesize(A4)	
+		// landscape - 设置横向页面
+	
+	* 相关性分析结果导出 corr2docx
+		
+		sysuse auto.dta, clear
+		
+		rename price 		价格
+		rename headroom 	头顶空间
+		rename length 		车长
+		rename weight		车重
+		
+		local Variables 价格 头顶空间 车长 车重
+		corr2docx `Variables' using 相关系数矩阵.docx, 		///  
+			replace fmt(%9.3f) title("相关系数矩阵") 			///
+			font("宋体",12,"black") star pagesize(A4) landscape 	///    
+			note("注：*** p<0.01, ** p<0.05, * p<0.1") 
+
+		// 左下角为 Pearson 相关系数，右上角为 Spearman 相关系数
+		
+
+*	CASE2	CFPS  数据清洗
+	
+	// 见 CFPS.do 
+
+*	CASE3	CSMAR 数据清洗
+	
+	// 见 CSMAR.do
+
+*	CASE4	WIND  数据清洗
+
+	// 见 WIND.do
+
 
 
 
@@ -1179,13 +1517,3 @@ exit
 /* End of do-file */
 
 ><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
-
-Notes:
-1.
-2.
-3.
-
-
-Version Control:
-
-
