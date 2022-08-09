@@ -1,5 +1,5 @@
 /*==================================================
-project:       
+project:       Data procedure in Stata
 Author:        Shutter Zor 
 E-email:       Shuttter_Z@outlook.com
 url:           shutterzor.github.io
@@ -14,7 +14,7 @@ Output:
 
 
 /*==================================================
-              0：目录
+						目录
 ==================================================*/
 
 
@@ -1499,16 +1499,20 @@ gen Province1 = ustrregexs(1) if ustrregexm(NativePlace,"(.*省|.*自治区)?(.*
 *	CASE2	CFPS  数据清洗
 	
 	// 见 CFPS.do 
+	
+		doedit CFPS.do
 
 *	CASE3	CSMAR 数据清洗
 	
 	// 见 CSMAR.do
+	
+		doedit CSMAR.do
 
 *	CASE4	WIND  数据清洗
 
 	// 见 WIND.do
 
-
+		doedit WIND.do
 
 
 
