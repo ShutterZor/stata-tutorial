@@ -1,11 +1,22 @@
+/*==================================================
+project:       Graph procedure in Stata
+Author:        Shutter Zor 
+E-email:       Shutter_Z@outlook.com
+url:           shutterzor.github.io
+Dependencies:  School of Accountancy, Wuhan Textile University
+----------------------------------------------------
+Creation Date:     9 Aug 2022 - 11:12:25
+Modification Date:   
+Do-file version:    01
+References:          
+Output:             
+==================================================*/
 
 
 
-/*
-			不同的绘图模板
-*/
-
-
+/*==================================================
+				不同的绘图模板
+==================================================*/
 
 
 local scheme "s2color"

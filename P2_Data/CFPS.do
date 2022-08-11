@@ -1,9 +1,22 @@
+/*==================================================
+project:       Data procedure in Stata
+Author:        Shutter Zor 
+E-email:       Shuttter_Z@outlook.com
+url:           shutterzor.github.io
+Dependencies:  School of Accountancy, Wuhan Textile University
+----------------------------------------------------
+Creation Date:     4 Aug 2022 - 15:15:44
+Modification Date:   
+Do-file version:    01
+References:          
+Output:             
+==================================================*/
 
 
+/*==================================================
+			CASE2	CFPS 数据清洗
+==================================================*/
 
-/*
-		CASE2	CFPS 数据清洗
- */
 
 view browse https://www.lianxh.cn/news/2916ae8363459.html
  

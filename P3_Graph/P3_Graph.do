@@ -327,24 +327,55 @@ Output:
 
 *	CASE2	绘制中国地图
 	
+	* 打开阿里云地图选择器
+		
+		view browse http://datav.aliyun.com/portal/school/atlas/area_selector
+	
+		* 选择想要区域后点击 其他类型中的第一个下载按钮
+		// 下载 中华人民共和国.json 文件
+	
+	* 将 JSON 文件转换为 shp 文件
+		
+		view browse http://datav.aliyun.com/portal/school/atlas/area_selector
 	
 	
 	
-	
-	
-	
-	
+		spshape2dta "ChinaMap/中华人民共和国.shp"		
 		
+		* 中华人民共和国.dta 用来存储画图指标
 		
+			use 中华人民共和国.dta, clear
+			keep _ID _CX _CY name 
+			
+			gen GDP = int(10*runiform())
+			save Indicator.dta, replace
 		
+		* 中华人民共和国_shp.dta 用来存储画图背景
+			
+			use 中华人民共和国_shp.dta
+			twoway scatter _Y _X, msize(vtiny) 
 		
+		* 先导入指标数据，然后在 中华人民共和国_shp.dta 上画图
 		
+			use Indicator.dta, clear
+			
+			spmap GDP using "中华人民共和国_shp.dta", id(_ID) 
+			
+			// 美化	
+			
+			spmap GDP using "中华人民共和国_shp.dta", id(_ID) 	///
+					 label(label(GDP) xcoord(_CX) ycoord(_CY) 	///
+				     size(*0.6) color(blue))					///
+					 title("GDP Growth for China")				///
+					 subtitle("Virtual Data")
 		
-		
-		
-		
-		
-		
+			spmap GDP using "中华人民共和国_shp.dta", id(_ID) 	///
+					 clnumber(5) fcolor(Reds2)					///
+					 title("GDP Growth for China")				///
+					 subtitle("Virtual Data")
+			
+			help spmap 		// 查看更多选项设定
+
 		
 		
 		

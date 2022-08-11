@@ -1,3 +1,23 @@
+/*==================================================
+project:       Data procedure in Stata
+Author:        Shutter Zor 
+E-email:       Shuttter_Z@outlook.com
+url:           shutterzor.github.io
+Dependencies:  School of Accountancy, Wuhan Textile University
+----------------------------------------------------
+Creation Date:     4 Aug 2022 - 15:15:44
+Modification Date:   
+Do-file version:    01
+References:          
+Output:             
+==================================================*/
+
+
+/*==================================================
+			Test 2 合并数据练习
+==================================================*/
+
+
 *- usbirth
 forvalues i = 2007/2020{
 	insheet using usbirth`i'.txt, clear
