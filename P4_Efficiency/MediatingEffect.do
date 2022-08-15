@@ -27,7 +27,7 @@ Output:
 
 global 	Y		price						// 定义因变量
 global	X		length						// 定义自变量
-global	MO		weight 	turn headroom		// 定义调节变量
+global	ME		weight 	turn headroom		// 定义中介变量
 global	CV		rep78						// 定义控制变量
 
 
@@ -36,22 +36,31 @@ global	CV		rep78						// 定义控制变量
 reg $Y $X $CV
 est store main
 
-foreach v in $MO {
+foreach v in $ME {
 
-	reg $Y c.($X )##(c.`v') $CV
-	est store `v'
+	reg `v' $X $CV
+	est store `v'2
+	
+	reg $Y $X `v' $CV
+	est store `v'3
 	
 }
 
-reg2docx main $MO using MO.docx, 					///
-	scalars(N r2(%9.3f) r2_a(%9.2f)) 				///
-	star(* 0.1  ** 0.05  *** 0.01)					///
-	b(%9.3f) t(%7.2f) replace						///
-	order($X $MO $CV)
+foreach v in $ME {
+
+	reg2docx main `v'2 `v'3 using ME`v'.docx, 						///
+		scalars(N r2(%9.3f) r2_a(%9.2f)) 				///
+		star(* 0.1  ** 0.05  *** 0.01)					///
+		b(%9.3f) t(%7.2f) replace						///
+		order($X $MO $CV)
+
+}
 
 
-	
+
 ************ 拆分上述模板 **************
 
-	
+
+
+
 		
