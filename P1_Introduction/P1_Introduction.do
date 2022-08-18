@@ -159,7 +159,7 @@ Output:
 			
 				local myVar price mpg rep78
 				dis `myVar'
-				dis "myVar"
+				dis "`myVar'"
 		
 		* 单双引号混排造成的错误（不重要，一般用不到）
 		
