@@ -7,7 +7,7 @@
 `Stata` 与其他软件的对比如下。
 
 <center>
-    <img src="images/intro.png">
+    <img src="./images/intro.png">
 </center>
 
 ## 1.2 菜单操作
