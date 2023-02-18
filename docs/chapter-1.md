@@ -4,12 +4,6 @@
 >
 > By Statistical software for data science
 
-`Stata` 与其他软件的对比如下。
-
-<center>
-    <img src="https://github.com/ShutterZor/stata-tutorial/blob/main/images/intro.png">
-</center>
-
 ## 1.2 菜单操作
 
 需要说明的是，在一般情况下，我们很少通过菜单操作的方式来进行操作，并且长时间不用容易遗忘繁琐的点击步骤，所以不对此进行过多介绍。
