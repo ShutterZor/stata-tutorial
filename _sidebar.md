@@ -7,3 +7,4 @@
 * [Chapter 1-探索你的数据](docs/chapter-5.md)
 * **My Program**
 * [oneclick](docs/oneclick.md)
+* [onetext](docs/onetext.md)
