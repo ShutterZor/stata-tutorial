@@ -65,5 +65,7 @@ onetext var1 var2, m(jaccard) g(js)
 ## 2 结语
 就目前而言， `onetext` 仅仅实现了很小一部分文本分析的功能，希望在未来能够不断地完善它（画饼）。
 
+图片加载可能存在问题，点击跳转本推文原始地址以获取更好的阅读体验：[Stata-简单文本分析（onetext命令）](https://mp.weixin.qq.com/s/EoKTpjpxCH5L1iYFwlIy-g)
+
 更多应用参考：[Stata：计算文本语调-onetext](https://mp.weixin.qq.com/s/ZGIpFkYfwqTWU9LrZOg8Mw)、[遍历兆字节，约取千人面：OneText文本分析速览](https://mp.weixin.qq.com/s/tD06v9V25c8eqet48I_6cg)
 
