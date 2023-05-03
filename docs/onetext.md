@@ -27,7 +27,7 @@ onetext text, k("大数据") m(count) g(count_text)
 
 ```
 
-![图1：count选项](https://files.mdnice.com/user/34469/2a25bf3a-18b3-4699-aec5-94570c2827b7.png)
+![图1：count选项](https://files.mdnice.com/user/34469/2a25bf3a-18b3-4699-aec5-94570c2827b7.png ':size=100')
 
 ```Stata
 
@@ -42,7 +42,7 @@ onetext text, k("大数据") m(exist) g(isExist)
 
 ```
 
-![图2：exist选项](https://files.mdnice.com/user/34469/0136ce03-b576-4b20-8f61-ad690940b7e1.png)
+![图2：exist选项](https://files.mdnice.com/user/34469/0136ce03-b576-4b20-8f61-ad690940b7e1.png ':size=100')
 
 ```Stata
 
@@ -60,7 +60,7 @@ onetext var1 var2, m(jaccard) g(js)
 
 ```
 
-![图3：相似度计算](https://files.mdnice.com/user/34469/2a214fa8-92fd-4b8c-8425-57b92ab8f26b.png)
+![图3：相似度计算](https://files.mdnice.com/user/34469/2a214fa8-92fd-4b8c-8425-57b92ab8f26b.png ':size=100')
 
 ## 2 结语
 就目前而言， `onetext` 仅仅实现了很小一部分文本分析的功能，希望在未来能够不断地完善它（画饼）。
