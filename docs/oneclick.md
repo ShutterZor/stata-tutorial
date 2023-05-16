@@ -133,7 +133,7 @@ oneclick y controls, method(regression) pvalue(p-value) fixvar(x and other FE) [
 
 在使用 `oneclick` 前，一定要先问自己，自己需要怎样的回归。比如：
 
-- 是否需要加 `robust` 选项，是的话则需要在 `oneclick` 后面加入 `o(robust)` 。具体而言，如果你的回归形式是 `reg y x, vce(robust)`，则对应的 `oneclick` 代码应该是 `oneclick y x 待选控制变量集合, m(reg) fix(x) p(0.1) o(vce(robust))`，而不是`oneclick y x 待选控制变量集合, m(reg) fix(x) p(0.1)`。一这样才称得上是一一对应。
+- 是否需要加 `robust` 选项，是的话则需要在 `oneclick` 后面加入 `o(robust)` 。具体而言，如果你的回归形式是 `reg y x, vce(robust)`，则对应的 `oneclick` 代码应该是 `oneclick y 待选控制变量集合, m(reg) fix(x) p(0.1) o(vce(robust))`，而不是`oneclick y 待选控制变量集合, m(reg) fix(x) p(0.1)`。一这样才称得上是一一对应。
 - 使用 `xtreg` 时，则需要将你要使用的固定效应 `fe`，或者随机效应 `re`，以及其他选项同时添加到 `o()` 当中。
 - 使用 `reghdfe` 时，比如固定个体效应、时间效应的同时需要聚类到行业，可以直接将 `absorb(stkcd year) cluster(industry)` 直接放入 `o()` 中。
 

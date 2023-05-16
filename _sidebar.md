@@ -8,4 +8,5 @@
 * **My Program**
 * [oneclick](docs/oneclick.md)
 * [onetext](docs/onetext.md)
-* **Update Date: 2023/5/9**
+* **Update Date - 更新日期: 2023/5/17**
+* [Update Detail - 更新明细](docs/log.md)
