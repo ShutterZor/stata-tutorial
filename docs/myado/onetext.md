@@ -27,7 +27,7 @@ onetext text, k("大数据") m(count) g(count_text)
 
 ```
 
-![](../images/onetext/figure1.png)
+![](../../images/onetext/figure1.png)
 
 
 ```Stata
@@ -43,7 +43,7 @@ onetext text, k("大数据") m(exist) g(isExist)
 
 ```
 
-![](../images/onetext/figure2.png)
+![](../../images/onetext/figure2.png)
 
 
 ```Stata
@@ -62,7 +62,7 @@ onetext var1 var2, m(jaccard) g(js)
 
 ```
 
-![](../images/onetext/figure3.png)
+![](../../images/onetext/figure3.png)
 
 
 ## 2 结语
