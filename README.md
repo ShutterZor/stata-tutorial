@@ -4,7 +4,7 @@
 
 ## About me-关于我
 
-左祥太（1999-），男，厦门大学会计学博士研究生。使用 `Stata` 两年多，开发 `Stata` 第三方 ado 文件两份 “`oneclick` 与 `onetext`”，论文发表于*科研管理*、*Journal of Cleaner Production* 等。
+左祥太（1999-），男，厦门大学会计学博士研究生。使用 `Stata` 两年多，开发 `Stata` 第三方 ado 文件两份 “`oneclick` 与 `onetext`”，论文发表于*科研管理*、*Journal of Cleaner Production*、*Technology Analysis and Strategic Management* 等。
 
 - Bilibili：[拿铁一定要加冰](https://space.bilibili.com/40545247)
 - 微信公众号：OneStata

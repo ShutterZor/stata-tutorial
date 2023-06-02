@@ -6,7 +6,10 @@
 * **Princeton's Stata Tutorial**
 * [Chapter 1-探索你的数据](docs/chapter-5.md)
 * **My Program**
-* [oneclick](docs/oneclick.md)
-* [onetext](docs/onetext.md)
+* [oneclick](docs/myado/oneclick.md)
+* [onetext](docs/myado/onetext.md)
+* **Others**
+* [Stata Cheatsheets](docs/others/cheatsheets.pdf)
+* [Stata Tutorial by Oscar](docs/others/tutorialbyoscar.pdf)
 * **Update Date: 2023/5/19**
 * [Update Log - 更新日志](docs/log.md)
