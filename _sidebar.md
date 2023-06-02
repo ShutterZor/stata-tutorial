@@ -8,8 +8,7 @@
 * **My Program**
 * [oneclick](docs/myado/oneclick.md)
 * [onetext](docs/myado/onetext.md)
-* **Others**
-* [Stata Cheatsheets](docs/others/cheatsheets.pdf)
-* [Stata Tutorial by Oscar](docs/others/tutorialbyoscar.pdf)
-* **Update Date: 2023/5/19**
+* **Other Resources**
+* [Other Resources Link](docs/otherpage.md)
+* **Update Date: 2023/6/2**
 * [Update Log - 更新日志](docs/log.md)
