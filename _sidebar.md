@@ -10,5 +10,5 @@
 * [onetext](docs/myado/onetext.md)
 * **Other Resources**
 * [Other Resources Link](docs/otherpage.md)
-* **Update Date: 2023/6/2**
+* **Update Date: 2023/7/7**
 * [Update Log - 更新日志](docs/log.md)
